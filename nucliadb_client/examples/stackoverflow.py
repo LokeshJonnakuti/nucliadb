@@ -47,6 +47,7 @@ from nucliadb_models.conversation import (
 from nucliadb_models.metadata import InputMetadata, Origin
 from nucliadb_models.utils import FieldIdString
 from nucliadb_models.writer import CreateResourcePayload
+import defusedxml.sax
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -315,7 +316,7 @@ if __name__ == "__main__":
     print(f"0 {datetime.now()}")
 
     if args.compute:
-        xml_parser = xml.sax.make_parser()
+        xml_parser = defusedxml.sax.make_parser()
         with open(args.cache, "w+") as cache_file:
             handler = StreamHandler(cache_file, args.num)
             xml_parser.setContentHandler(handler)
