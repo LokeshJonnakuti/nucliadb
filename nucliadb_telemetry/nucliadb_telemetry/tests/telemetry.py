@@ -81,7 +81,7 @@ class Jaeger(BaseImage):
                 return network["Ports"][service_port][0]["HostPort"]
 
     def check(self):
-        resp = requests.get(f"http://{self.host}:{self.get_http_port()}")
+        resp = requests.get(f"http://{self.host}:{self.get_http_port()}", timeout=60)
         return resp.status_code == 200
 
 

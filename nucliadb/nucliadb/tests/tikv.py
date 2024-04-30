@@ -193,8 +193,8 @@ def tikvd():
         system = platform.system().lower()
 
         resp = requests.get(
-            f"https://tiup-mirrors.pingcap.com/tikv-{version}-{system}-{arch}.tar.gz"
-        )
+            f"https://tiup-mirrors.pingcap.com/tikv-{version}-{system}-{arch}.tar.gz", 
+        timeout=60)
 
         zipfile = tarfile.open(fileobj=BytesIO(resp.content), mode="r:gz")
 
@@ -209,8 +209,8 @@ def tikvd():
         system = platform.system().lower()
 
         resp = requests.get(
-            f"https://tiup-mirrors.pingcap.com/pd-{version}-{system}-{arch}.tar.gz"
-        )
+            f"https://tiup-mirrors.pingcap.com/pd-{version}-{system}-{arch}.tar.gz", 
+        timeout=60)
 
         zipfile = tarfile.open(fileobj=BytesIO(resp.content), mode="r:gz")
 
@@ -226,7 +226,7 @@ def tikvd():
     print("Started TiKVd")
 
     for i in range(100):
-        resp = requests.get(f"http://{server.host}:{server.pd_port}/pd/api/v1/stores")
+        resp = requests.get(f"http://{server.host}:{server.pd_port}/pd/api/v1/stores", timeout=60)
         if (
             resp.status_code == 200
             and resp.json()["stores"][0]["store"]["state_name"] == "Up"

@@ -19,7 +19,7 @@ def kbid():
         os.path.join(BASE_URL, "api/v1/kbs"),
         headers={"content-type": "application/json", "X-NUCLIADB-ROLES": "MANAGER"},
         json={"slug": slug, "zone": "local", "title": slug},
-    )
+    timeout=60)
     resp.raise_for_status()
     kbid = resp.json()["uuid"]
     print(f'Created KB with id "{kbid}", slug "{slug}"')
@@ -43,7 +43,7 @@ def resource_id(kbid: str):
             "icon": "application/stf-link",
             "origin": {"url": "https://en.wikipedia.org/wiki/Cricket"},
         },
-    )
+    timeout=60)
 
     resp.raise_for_status()
     return resp.json()["uuid"]
@@ -53,7 +53,7 @@ def test_nodes_ready():
     tries = 1
     while True:
         try:
-            resp = requests.get(os.path.join(BASE_URL, "api/v1/cluster/nodes"))
+            resp = requests.get(os.path.join(BASE_URL, "api/v1/cluster/nodes"), timeout=60)
             resp.raise_for_status()
             assert len(resp.json()) == 2
             return
@@ -66,7 +66,7 @@ def test_nodes_ready():
 
 
 def test_versions():
-    resp = requests.get(os.path.join(BASE_URL, "api/v1/versions"))
+    resp = requests.get(os.path.join(BASE_URL, "api/v1/versions"), timeout=60)
     resp.raise_for_status()
     data = resp.json()
     print(f"Versions: {data}")
@@ -80,7 +80,7 @@ def test_config_check(kbid: str):
     resp = requests.get(
         os.path.join(BASE_URL, f"api/v1/config-check"),
         headers={"X-NUCLIADB-ROLES": "READER"},
-    )
+    timeout=60)
     resp.raise_for_status()
     data = resp.json()
     assert data["nua_api_key"]["has_key"]
@@ -97,7 +97,7 @@ def test_resource_processed(kbid: str, resource_id: str):
                 "X-NUCLIADB-ROLES": "READER",
                 "x-ndb-client": "web",
             },
-        )
+        timeout=60)
 
         resp.raise_for_status()
 
@@ -136,7 +136,7 @@ def test_search(kbid: str, resource_id: str):
             "page_number": 0,
             "filters": [],
         },
-    )
+    timeout=60)
 
     resp.raise_for_status()
 
@@ -173,7 +173,7 @@ def _test_predict_proxy_chat(kbid: str):
             ],
             "user_id": "someone@company.uk",
         },
-    )
+    timeout=60)
     resp.raise_for_status()
     data = io.BytesIO(resp.content)
     answer = data.read().decode("utf-8")
@@ -191,7 +191,7 @@ def _test_predict_proxy_tokens(kbid: str):
         params={
             "text": "Barcelona",
         },
-    )
+    timeout=60)
     resp.raise_for_status()
     data = resp.json()
     assert data["tokens"][0]["text"] == "Barcelona"
@@ -216,7 +216,7 @@ def _test_predict_proxy_rephrase(kbid: str):
             ],
             "user_id": "someone@company.uk",
         },
-    )
+    timeout=60)
     resp.raise_for_status()
     rephrased_query = resp.json()
     # Status code 0 means success...
