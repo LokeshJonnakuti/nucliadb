@@ -38,7 +38,8 @@ from nucliadb_models.writer import CreateResourcePayload
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
-CACHE_FILENAME = tempfile.mktemp(suffix=".nucliadb")
+with tempfile.NamedTemporaryFile(suffix=".nucliadb", delete=False) as tf:
+    CACHE_FILENAME = tf.name
 
 
 @dataclass
