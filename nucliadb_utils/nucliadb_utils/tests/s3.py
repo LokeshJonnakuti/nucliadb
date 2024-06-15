@@ -18,12 +18,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 import pytest
-import requests
 from pytest_docker_fixtures import images  # type: ignore
 from pytest_docker_fixtures.containers._base import BaseImage  # type: ignore
 
 from nucliadb_utils.storages.s3 import S3Storage
 from nucliadb_utils.store import MAIN
+from security import safe_requests
 
 images.settings["s3"] = {
     "image": "localstack/localstack",
@@ -41,7 +41,7 @@ class S3(BaseImage):
 
     def check(self):
         try:
-            response = requests.get(f"http://{self.host}:{self.get_port()}")
+            response = safe_requests.get(f"http://{self.host}:{self.get_port()}")
             return response.status_code == 404
         except Exception:
             return False

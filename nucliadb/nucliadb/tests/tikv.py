@@ -27,8 +27,8 @@ import time
 from io import BytesIO
 
 import pytest
-import requests
 from tikv_client import TransactionClient  # type: ignore
+from security import safe_requests
 
 
 class TiKVd(object):
@@ -192,8 +192,7 @@ def tikvd():
             arch = "amd64"
         system = platform.system().lower()
 
-        resp = requests.get(
-            f"https://tiup-mirrors.pingcap.com/tikv-{version}-{system}-{arch}.tar.gz"
+        resp = safe_requests.get(f"https://tiup-mirrors.pingcap.com/tikv-{version}-{system}-{arch}.tar.gz"
         )
 
         zipfile = tarfile.open(fileobj=BytesIO(resp.content), mode="r:gz")
@@ -208,8 +207,7 @@ def tikvd():
             arch = "amd64"
         system = platform.system().lower()
 
-        resp = requests.get(
-            f"https://tiup-mirrors.pingcap.com/pd-{version}-{system}-{arch}.tar.gz"
+        resp = safe_requests.get(f"https://tiup-mirrors.pingcap.com/pd-{version}-{system}-{arch}.tar.gz"
         )
 
         zipfile = tarfile.open(fileobj=BytesIO(resp.content), mode="r:gz")
@@ -226,7 +224,7 @@ def tikvd():
     print("Started TiKVd")
 
     for i in range(100):
-        resp = requests.get(f"http://{server.host}:{server.pd_port}/pd/api/v1/stores")
+        resp = safe_requests.get(f"http://{server.host}:{server.pd_port}/pd/api/v1/stores")
         if (
             resp.status_code == 200
             and resp.json()["stores"][0]["store"]["state_name"] == "Up"

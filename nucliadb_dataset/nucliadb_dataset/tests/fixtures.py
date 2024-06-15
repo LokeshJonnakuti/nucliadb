@@ -25,7 +25,6 @@ from typing import AsyncIterator, Optional
 import boto3
 import docker  # type: ignore
 import pytest
-import requests
 from google.auth.credentials import AnonymousCredentials  # type: ignore
 from google.cloud import storage  # type: ignore
 from grpc import aio  # type: ignore
@@ -36,6 +35,7 @@ from pytest_docker_fixtures.containers._base import BaseImage  # type: ignore
 from nucliadb_sdk.entities import Entity
 from nucliadb_sdk.knowledgebox import KnowledgeBox
 from nucliadb_sdk.labels import LabelType
+from security import safe_requests
 
 DOCKER_ENV_GROUPS = re.search(r"//([^:]+)", docker.from_env().api.base_url)
 DOCKER_HOST: Optional[str] = DOCKER_ENV_GROUPS.group(1) if DOCKER_ENV_GROUPS else None  # type: ignore
@@ -170,8 +170,7 @@ class GCS(BaseImage):
 
     def check(self):
         try:
-            response = requests.get(
-                f"http://{self.host}:{self.get_port()}/storage/v1/b"
+            response = safe_requests.get(f"http://{self.host}:{self.get_port()}/storage/v1/b"
             )
             return response.status_code == 200
         except:  # noqa
@@ -222,7 +221,7 @@ class S3(BaseImage):
 
     def check(self):
         try:
-            response = requests.get(f"http://{self.host}:{self.get_port()}")
+            response = safe_requests.get(f"http://{self.host}:{self.get_port()}")
             return response.status_code == 404
         except Exception:  # pragma: no cover
             return False

@@ -23,13 +23,13 @@ from typing import Optional
 
 import docker  # type: ignore
 import pytest
-import requests
 from pytest_docker_fixtures import images  # type: ignore
 from pytest_docker_fixtures.containers._base import BaseImage  # type: ignore
 
 from nucliadb_utils.storages.gcs import GCSStorage
 from nucliadb_utils.store import MAIN
 from nucliadb_utils.tests import free_port
+from security import safe_requests
 
 # IMPORTANT!
 # Without this, tests running in a remote docker host won't work
@@ -60,8 +60,7 @@ class GCS(BaseImage):
 
     def check(self):
         try:
-            response = requests.get(
-                f"http://{self.host}:{self.get_port()}/storage/v1/b"
+            response = safe_requests.get(f"http://{self.host}:{self.get_port()}/storage/v1/b"
             )
             return response.status_code == 200
         except:  # pragma: no cover
