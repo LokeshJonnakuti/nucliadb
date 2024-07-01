@@ -20,7 +20,6 @@
 import argparse
 import asyncio
 import base64
-import random
 import tempfile
 from dataclasses import dataclass
 from typing import List
@@ -35,6 +34,7 @@ from nucliadb_client.knowledgebox import CODEX
 from nucliadb_models.metadata import InputMetadata, Origin
 from nucliadb_models.text import TextField
 from nucliadb_models.writer import CreateResourcePayload
+import secrets
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -173,8 +173,8 @@ async def upload_extracted(kb):
 
 
 def print_random_vector():
-    article = ARTICLES[random.randint(0, len(ARTICLES) - 1)]
-    paragraph = article.body[random.randint(0, len(article.body) - 1)]
+    article = ARTICLES[secrets.SystemRandom().randint(0, len(ARTICLES) - 1)]
+    paragraph = article.body[secrets.SystemRandom().randint(0, len(article.body) - 1)]
     embeddings = model.encode([paragraph])
     print(list(embeddings[0]))
 

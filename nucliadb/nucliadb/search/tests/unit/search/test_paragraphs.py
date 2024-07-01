@@ -18,13 +18,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import asyncio
-import random
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from nucliadb_protos.utils_pb2 import ExtractedText
 
 from nucliadb.search.search import paragraphs
+import secrets
 
 
 @pytest.fixture()
@@ -107,7 +107,7 @@ class TestGetParagraphText:
 
 
 async def fake_get_extracted_text_from_gcloud(*args, **kwargs):
-    await asyncio.sleep(random.uniform(0, 1))
+    await asyncio.sleep(secrets.SystemRandom().uniform(0, 1))
     return ExtractedText(text=b"Hello World!")
 
 

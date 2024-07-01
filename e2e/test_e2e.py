@@ -2,11 +2,11 @@ import base64
 import io
 import json
 import os
-import random
 import time
 
 import pytest
 import requests
+import secrets
 
 BASE_URL = os.environ.get("NUCLIADB_URL", "http://localhost:8080")
 
@@ -14,7 +14,7 @@ BASE_URL = os.environ.get("NUCLIADB_URL", "http://localhost:8080")
 @pytest.fixture(scope="session")
 def kbid():
     # generate random slug
-    slug = "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=10))
+    slug = "".join(secrets.SystemRandom().choices("abcdefghijklmnopqrstuvwxyz", k=10))
     resp = requests.post(
         os.path.join(BASE_URL, "api/v1/kbs"),
         headers={"content-type": "application/json", "X-NUCLIADB-ROLES": "MANAGER"},

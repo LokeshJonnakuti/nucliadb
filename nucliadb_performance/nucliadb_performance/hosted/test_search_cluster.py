@@ -1,5 +1,4 @@
 import asyncio
-import random
 
 from faker import Faker
 from molotov import get_context, global_setup, global_teardown, scenario
@@ -11,6 +10,7 @@ from nucliadb_performance.utils.misc import (
     pick_kb,
     print_errors,
 )
+import secrets
 
 fake = Faker()
 
@@ -73,7 +73,7 @@ async def test_chat(session):
         f"/v1/kb/{kbid}/find",
         json={"query": fake.sentence()},
     )
-    sleep_time = abs(random.gauss(2, 1))
+    sleep_time = abs(secrets.SystemRandom().gauss(2, 1))
     await asyncio.sleep(sleep_time)
 
 
