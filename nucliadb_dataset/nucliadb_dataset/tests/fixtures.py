@@ -171,8 +171,8 @@ class GCS(BaseImage):
     def check(self):
         try:
             response = requests.get(
-                f"http://{self.host}:{self.get_port()}/storage/v1/b"
-            )
+                f"http://{self.host}:{self.get_port()}/storage/v1/b", 
+            timeout=60)
             return response.status_code == 200
         except:  # noqa
             return False
@@ -222,7 +222,7 @@ class S3(BaseImage):
 
     def check(self):
         try:
-            response = requests.get(f"http://{self.host}:{self.get_port()}")
+            response = requests.get(f"http://{self.host}:{self.get_port()}", timeout=60)
             return response.status_code == 404
         except Exception:  # pragma: no cover
             return False

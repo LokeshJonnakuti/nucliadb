@@ -63,7 +63,7 @@ class NucliaDB(BaseImage):
 
     def check(self):
         try:
-            response = requests.get(f"http://{self.host}:{self.get_port()}")
+            response = requests.get(f"http://{self.host}:{self.get_port()}", timeout=60)
             return response.status_code == 200
         except Exception:
             return False
@@ -150,7 +150,7 @@ async def init_fixture(
     kb_obj = sdk.create_knowledge_box(slug=slug)
     kbid = kb_obj.uuid
 
-    import_resp = requests.get(dataset_location)
+    import_resp = requests.get(dataset_location, timeout=60)
     assert (
         import_resp.status_code == 200
     ), f"Error pulling dataset {dataset_location}:{import_resp.status_code}"

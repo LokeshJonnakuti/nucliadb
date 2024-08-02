@@ -41,7 +41,7 @@ class S3(BaseImage):
 
     def check(self):
         try:
-            response = requests.get(f"http://{self.host}:{self.get_port()}")
+            response = requests.get(f"http://{self.host}:{self.get_port()}", timeout=60)
             return response.status_code == 404
         except Exception:
             return False
