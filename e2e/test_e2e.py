@@ -7,6 +7,7 @@ import time
 
 import pytest
 import requests
+from security import safe_requests
 
 BASE_URL = os.environ.get("NUCLIADB_URL", "http://localhost:8080")
 
@@ -53,7 +54,7 @@ def test_nodes_ready():
     tries = 1
     while True:
         try:
-            resp = requests.get(os.path.join(BASE_URL, "api/v1/cluster/nodes"))
+            resp = safe_requests.get(os.path.join(BASE_URL, "api/v1/cluster/nodes"))
             resp.raise_for_status()
             assert len(resp.json()) == 2
             return
@@ -66,7 +67,7 @@ def test_nodes_ready():
 
 
 def test_versions():
-    resp = requests.get(os.path.join(BASE_URL, "api/v1/versions"))
+    resp = safe_requests.get(os.path.join(BASE_URL, "api/v1/versions"))
     resp.raise_for_status()
     data = resp.json()
     print(f"Versions: {data}")
@@ -77,7 +78,7 @@ def test_versions():
 
 
 def test_config_check(kbid: str):
-    resp = requests.get(
+    resp = safe_requests.get(
         os.path.join(BASE_URL, f"api/v1/config-check"),
         headers={"X-NUCLIADB-ROLES": "READER"},
     )
@@ -90,7 +91,7 @@ def test_config_check(kbid: str):
 def test_resource_processed(kbid: str, resource_id: str):
     start = time.time()
     while True:
-        resp = requests.get(
+        resp = safe_requests.get(
             os.path.join(BASE_URL, f"api/v1/kb/{kbid}/resource/{resource_id}"),
             headers={
                 "content-type": "application/json",
@@ -181,7 +182,7 @@ def _test_predict_proxy_chat(kbid: str):
 
 
 def _test_predict_proxy_tokens(kbid: str):
-    resp = requests.get(
+    resp = safe_requests.get(
         os.path.join(BASE_URL, f"api/v1/kb/{kbid}/predict/tokens"),
         headers={
             "content-type": "application/json",

@@ -23,7 +23,6 @@ from typing import AsyncIterator
 
 import nats
 import pytest
-import requests
 from fastapi import FastAPI
 from grpc import aio  # type: ignore
 from httpx import AsyncClient
@@ -50,6 +49,7 @@ from nucliadb_telemetry.utils import (
     init_telemetry,
     set_info_on_span,
 )
+from security import safe_requests
 
 images.settings["jaeger"] = {
     "image": "jaegertracing/all-in-one",
@@ -81,7 +81,7 @@ class Jaeger(BaseImage):
                 return network["Ports"][service_port][0]["HostPort"]
 
     def check(self):
-        resp = requests.get(f"http://{self.host}:{self.get_http_port()}")
+        resp = safe_requests.get(f"http://{self.host}:{self.get_http_port()}")
         return resp.status_code == 200
 
 

@@ -30,6 +30,7 @@ from nucliadb_models.resource import KnowledgeBoxList, KnowledgeBoxObj
 from nucliadb_models.utils import SlugString
 from nucliadb_sdk.client import Environment, NucliaDBClient
 from nucliadb_sdk.knowledgebox import KnowledgeBox
+from security import safe_requests
 
 
 class InvalidHost(Exception):
@@ -89,7 +90,7 @@ def get_kb(
         )
 
     api_path = f"{nucliadb_base_url}/api/v1"
-    response = requests.get(
+    response = safe_requests.get(
         f"{api_path}/kb/s/{slug}",
         headers={"X-NUCLIADB-ROLES": "READER"},
     )
@@ -132,7 +133,7 @@ def delete_kb(slug: str, nucliadb_base_url: Optional[str] = "http://localhost:80
 def list_kbs(
     nucliadb_base_url: Optional[str] = "http://localhost:8080",
 ) -> List[Optional[SlugString]]:
-    response = requests.get(
+    response = safe_requests.get(
         f"{nucliadb_base_url}/kbs",
         headers={"X-NUCLIADB-ROLES": "MANAGER"},
     )
