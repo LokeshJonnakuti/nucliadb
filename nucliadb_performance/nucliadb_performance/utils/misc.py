@@ -1,6 +1,5 @@
 import inspect
 import os
-import random
 import shelve
 import statistics
 from dataclasses import dataclass
@@ -19,6 +18,7 @@ from nucliadb_sdk import NucliaDB
 
 from .metrics import record_request_process_time
 from .saved_requests import Request, load_saved_request
+import secrets
 
 CURRENT_DIR = os.getcwd()
 
@@ -186,7 +186,7 @@ def get_kb_paragraphs(kbid):
 
 def load_kbs():
     kbs = get_kbs()
-    random.shuffle(kbs)
+    secrets.SystemRandom().shuffle(kbs)
     _DATA["kbs"] = kbs
     return kbs
 
@@ -246,7 +246,7 @@ def get_request(kbid_or_slug: str, with_tags=None) -> Request:
     )
     if len(requests) == 0:
         raise ValueError("Could not find any request saved")
-    return random.choice(requests)
+    return secrets.choice(requests)
 
 
 @cache

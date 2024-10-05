@@ -19,7 +19,6 @@
 #
 import asyncio
 import logging
-import random
 import uuid
 from typing import Any, Awaitable, Callable, Optional
 
@@ -54,6 +53,7 @@ from .index_node import IndexNode
 from .settings import settings
 from .standalone.index_node import ProxyStandaloneIndexNode
 from .standalone.utils import get_self, get_standalone_node_id
+import secrets
 
 logger = logging.getLogger(__name__)
 
@@ -496,9 +496,9 @@ def choose_node(
 
     selected_node: AbstractIndexNode
     if len(preferred_nodes) > 0:
-        replica_id, selected_node = random.choice(preferred_nodes)
+        replica_id, selected_node = secrets.choice(preferred_nodes)
     else:
-        replica_id, selected_node = random.choice(backend_nodes)
+        replica_id, selected_node = secrets.choice(backend_nodes)
     return selected_node, replica_id, selected_node.id
 
 

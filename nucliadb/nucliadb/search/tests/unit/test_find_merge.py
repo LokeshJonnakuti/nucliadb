@@ -18,12 +18,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import random
 
 from nucliadb_protos.nodereader_pb2 import DocumentScored, ParagraphResult
 
 from nucliadb.search.search.find_merge import Orderer, merge_paragraphs_vectors
 from nucliadb_models.search import SCORE_TYPE
+import secrets
 
 
 def test_orderer():
@@ -32,7 +32,7 @@ def test_orderer():
     items = {}
     for i in range(30):
         key = str(i)
-        score = random.random() * 25
+        score = secrets.SystemRandom().random() * 25
         items[key] = score
 
     boosted = {4, 10, 28}
