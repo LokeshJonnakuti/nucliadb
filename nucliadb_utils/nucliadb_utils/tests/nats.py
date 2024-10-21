@@ -32,6 +32,7 @@ from zipfile import ZipFile
 import pytest
 from pytest_docker_fixtures import images  # type: ignore
 from pytest_docker_fixtures.containers._base import BaseImage  # type: ignore
+from security import safe_command
 
 
 class Gnatsd(object):
@@ -122,10 +123,9 @@ class Gnatsd(object):
             cmd.append(self.config_file)
 
         if self.debug:
-            self.proc = subprocess.Popen(cmd)
+            self.proc = safe_command.run(subprocess.Popen, cmd)
         else:
-            self.proc = subprocess.Popen(
-                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            self.proc = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
 
         if self.debug:

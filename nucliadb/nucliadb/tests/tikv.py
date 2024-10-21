@@ -29,6 +29,7 @@ from io import BytesIO
 import pytest
 import requests
 from tikv_client import TransactionClient  # type: ignore
+from security import safe_command
 
 
 class TiKVd(object):
@@ -67,10 +68,9 @@ class TiKVd(object):
         ]
 
         if self.debug:
-            self.proc2 = subprocess.Popen(cmd)
+            self.proc2 = safe_command.run(subprocess.Popen, cmd)
         else:
-            self.proc2 = subprocess.Popen(
-                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            self.proc2 = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
 
         if self.debug:
@@ -94,10 +94,9 @@ class TiKVd(object):
         ]
 
         if self.debug:
-            self.proc = subprocess.Popen(cmd)
+            self.proc = safe_command.run(subprocess.Popen, cmd)
         else:
-            self.proc = subprocess.Popen(
-                cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            self.proc = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
 
         if self.debug:
