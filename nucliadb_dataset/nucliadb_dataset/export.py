@@ -53,7 +53,7 @@ class NucliaDatasetsExport:
             f"{self.datasets_url}/datasets",
             json=dataset_def,
             headers={"x-stf-nuakey": f"Bearer {self.apikey}"},
-        )
+        timeout=60)
 
         dataset_id = response.json()["id"]
 
@@ -65,7 +65,7 @@ class NucliaDatasetsExport:
                     f"{self.datasets_url}/dataset/{dataset_id}/partition/{partition_id}",
                     data=partition_fileobj,
                     headers={"x-stf-nuakey": f"Bearer {self.apikey}"},
-                )
+                timeout=60)
 
 
 class FileSystemExport:

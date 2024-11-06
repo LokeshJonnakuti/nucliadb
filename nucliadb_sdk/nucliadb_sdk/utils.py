@@ -63,7 +63,7 @@ def create_knowledge_box(
         f"{api_path}/kbs",
         json=payload,
         headers={"X-NUCLIADB-ROLES": "MANAGER"},
-    )
+    timeout=60)
     if response.status_code == 419:
         raise KnowledgeBoxAlreadyExists()
 
@@ -92,7 +92,7 @@ def get_kb(
     response = requests.get(
         f"{api_path}/kb/s/{slug}",
         headers={"X-NUCLIADB-ROLES": "READER"},
-    )
+    timeout=60)
 
     if response.status_code == 404:
         return None
@@ -125,7 +125,7 @@ def delete_kb(slug: str, nucliadb_base_url: Optional[str] = "http://localhost:80
     kb = get_kb(slug, nucliadb_base_url)
     if kb is None or kb.client.url is None:
         raise AttributeError("URL should not be none")
-    response = requests.delete(kb.client.url, headers={"X-NUCLIADB-ROLES": f"MANAGER"})
+    response = requests.delete(kb.client.url, headers={"X-NUCLIADB-ROLES": f"MANAGER"}, timeout=60)
     assert response.status_code == 200
 
 
@@ -135,7 +135,7 @@ def list_kbs(
     response = requests.get(
         f"{nucliadb_base_url}/kbs",
         headers={"X-NUCLIADB-ROLES": "MANAGER"},
-    )
+    timeout=60)
 
     assert response.status_code == 200
     kbs = KnowledgeBoxList.parse_raw(response.content)
